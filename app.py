@@ -11,12 +11,9 @@ def set_collections(dbname, tablename):
     db = conn.dbname
     # 使用test_set集合，没有则自动创建
     my_set = db.tablename
-    # 添加多条数据到集合中
-    # users = [{"name": "zhangsan", "age": 18}, {"name": "lisi", "age": 20}]
-    # my_set.insert(users)
-    # 或
-    # my_set.save(users)
+    print(my_set)
     return 'Hello World!'
+
 
 @app.route('/get_database')
 def get_database():
@@ -29,7 +26,19 @@ def get_database():
     return jsonify(dblist)
 
 
-@app.route('/get_collections')
+@app.route('/get_one_collection/one')
+def get_one_collection(one):
+    conn = MongoClient('127.0.0.1', 27017)
+    # 连接mydb数据库，没有则自动创建
+    db = conn.mydb
+    # 使用test_set集合，没有则自动创建
+    my_set = db.test_set
+    one = my_set.find_one(one)
+
+    return jsonify(one)
+
+
+@app.route('/get_collections/')
 def get_collections():
     conn = MongoClient('127.0.0.1', 27017)
     # 连接mydb数据库，没有则自动创建
@@ -44,7 +53,6 @@ def get_collections():
     # 查询name=zhangsan的
     for i in my_set.find({"name": "zhangsan"}):
         print(i)
-    print(my_set.find_one({"name": "zhangsan"}))
     return '{}'.format(li)
 
 
