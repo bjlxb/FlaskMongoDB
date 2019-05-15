@@ -4,6 +4,20 @@ from pymongo import MongoClient
 app = Flask(__name__)
 
 
+client = None
+
+
+@app.route('/get_client/<ip>/<port>')
+def get_client(ip, port):
+    global client
+    client = MongoClient(host=ip, port=int(port))
+    # client = MongoClient('mongodb://localhost:27017/')
+    if client is None:
+        return "0"
+    else:
+        return "1"
+
+
 @app.route('/set_collections/<dbname>/<tablename>')
 def set_collections(dbname, tablename):
     conn = MongoClient('127.0.0.1', 27017)
@@ -17,8 +31,9 @@ def set_collections(dbname, tablename):
 
 @app.route('/get_database')
 def get_database():
-    myclient = MongoClient('127.0.0.1', 27017)
-    dblist = myclient.list_database_names()
+    # myclient = MongoClient('127.0.0.1', 27017)
+    print(client)
+    dblist = client.list_database_names()
 
     print(dblist)
     # return '{}'.format(dblist)
@@ -57,4 +72,4 @@ def get_collections():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000, debug='True')
